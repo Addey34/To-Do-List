@@ -1,10 +1,7 @@
+const baseUrl = 'https://to-do-list-ag.vercel.app';
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
-
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
-
-const baseUrl = 'https://to-do-list-ag.vercel.app';
 
 function getToken() {
     return localStorage.getItem('token');
