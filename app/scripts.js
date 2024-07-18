@@ -1,4 +1,4 @@
-const baseUrl = process.env.API_URL;
+const baseUrl = "http://localhost:8000";
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
