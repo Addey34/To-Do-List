@@ -4,7 +4,7 @@ const completedTaskList = document.getElementById('completedTaskList');
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-const baseUrl = process.env.API_URL;
+const baseUrl = process.env.API_URL || 'https://to-do-list-ag.vercel.app';
 
 function getToken() {
     return localStorage.getItem('token');
