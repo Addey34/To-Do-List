@@ -1,7 +1,10 @@
-const baseUrl = process.env.API_URL;
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
+
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+
+const baseUrl = process.env.API_URL;
 
 function getToken() {
     return localStorage.getItem('token');
