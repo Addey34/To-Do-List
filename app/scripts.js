@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:8000';
+const baseUrl = 'https://to-do-list-fe9bzvw7r-adrian34s-projects.vercel.app/';
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
