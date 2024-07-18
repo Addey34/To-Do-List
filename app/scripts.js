@@ -1,4 +1,4 @@
-const baseUrl = 'https://to-do-list-ag.vercel.app';
+const baseUrl = process.env.API_URL;
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
