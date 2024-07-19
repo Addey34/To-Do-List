@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,28 +18,28 @@
   </div>
   
   <div id="todoApp" style="display: none;">
-    <h1>To-Do-List</h1>
+    <h1>To-Do List</h1>
     <button id="logoutButton" onclick="logout()">Logout</button>
     <div class="container">
-      <div class="champs">
-        <input type="text" id="taskInput" placeholder="Ajouter une tâche">
+      <div class="fields">
+        <input type="text" id="taskInput" placeholder="Add a task">
         <button onclick="addTask()">
           <ion-icon name="add-circle-outline"></ion-icon>
         </button>
       </div>
-      <div class="sous-onglets">
-				<button class="onglet-actif" onclick="showTab('enCours', event)">En cours</button>
-				<button onclick="showTab('completes', event)">Complétées</button>
+      <div class="tabs">
+        <button class="active-tab" onclick="showTab('inProgress', event)">In Progress</button>
+        <button onclick="showTab('completed', event)">Completed</button>
       </div>
-      <ul id="taskList" class="contenu-onglet"></ul>
-      <ul id="completedTaskList" class="contenu-onglet" style="display:none;"></ul>
+      <ul id="taskList" class="tab-content"></ul>
+      <ul id="completedTaskList" class="tab-content" style="display:none;"></ul>
     </div>
   </div>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
   <script src="scripts.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:8000";
+const baseUrl = "http://localhost:5500";
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
@@ -29,8 +29,8 @@ function login() {
             fetchCompletedTasks();
         })
         .catch(error => {
-            console.error("Erreur de connexion:", error.response ? error.response.data : error.message);
-            alert("Erreur de connexion. Veuillez réessayer.");
+            console.error("Login error:", error.response ? error.response.data : error.message);
+            alert("Login error. Please try again.");
             document.getElementById('loginForm').style.display = 'block';
         });
 }
@@ -41,11 +41,11 @@ function register() {
 
     axios.post(`${baseUrl}/register`, { username, password })
         .then(() => {
-            alert("Inscription réussie. Veuillez vous connecter.");
+            alert("Registration successful. Please log in.");
         })
         .catch(error => {
-            console.error("Erreur d'inscription:", error);
-            alert("Erreur d'inscription. Veuillez réessayer.");
+            console.error("Registration error:", error);
+            alert("Registration error. Please try again.");
         });
 }
 
@@ -63,10 +63,10 @@ function logout() {
 function checkSession() {
     const token = localStorage.getItem('token');
     if (token) {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('todoApp').style.display = 'block';
-    fetchTasks();
-    fetchCompletedTasks();
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('todoApp').style.display = 'block';
+        fetchTasks();
+        fetchCompletedTasks();
     }
 }
 
@@ -88,7 +88,7 @@ function fetchTasks() {
         response.data.sort((a, b) => a.order - b.order).forEach(task => appendTaskToList(task));
     })
     .catch(error => {
-        console.error("Erreur lors de la récupération des tâches en cours:", error);
+        console.error("Error fetching in-progress tasks:", error);
     });
 }
 
@@ -103,7 +103,7 @@ function fetchCompletedTasks() {
         response.data.forEach(completedTask => appendCompletedTaskToList(completedTask));
     })
     .catch(error => {
-        console.error("Erreur lors de la récupération des tâches complétées:", error);
+        console.error("Error fetching completed tasks:", error);
     });
 }
 
@@ -114,7 +114,7 @@ function initSortable() {
         onEnd: function (evt) {
             const taskId = evt.item.dataset.taskId;
             const newIndex = evt.newIndex;
-            console.log(`Déplacement de la tâche ID: ${taskId} vers le nouvel index: ${newIndex}`);
+            console.log(`Moved task ID: ${taskId} to new index: ${newIndex}`);
             updateTaskOrder(taskId, newIndex);
         },
     });
@@ -130,7 +130,7 @@ function updateTaskOrder(taskId, newIndex) {
         fetchTasks(); 
     })
     .catch(error => {
-        console.error("Erreur lors de la mise à jour de l'ordre des tâches:", error);
+        console.error("Error updating task order:", error);
     });
 }
 
@@ -164,7 +164,7 @@ function addTask() {
         taskInput.value = "";
     })
     .catch(error => {
-        console.error("Erreur lors de l'ajout de la tâche:", error);
+        console.error("Error adding task:", error);
     });
 }
 
@@ -184,10 +184,10 @@ function createButtonContainer(taskId) {
     buttonContainer.className = 'button-container';
 
     const buttons = [
-        { name: 'checkmark-circle-outline', class: 'valid', action: validTask, title: 'Valider la tâche' },
-        { name: 'duplicate-outline', class: 'duplicate', action: duplicateTask, title: 'Dupliquer la tâche' },
-        { name: 'pencil-outline', class: 'modify', action: editTask, title: 'Modifier la tâche' },
-        { name: 'trash-outline', class: 'delete', action: deleteTask, title: 'Supprimer la tâche' }
+        { name: 'checkmark-circle-outline', class: 'valid', action: validTask, title: 'Mark as done' },
+        { name: 'duplicate-outline', class: 'duplicate', action: duplicateTask, title: 'Duplicate task' },
+        { name: 'pencil-outline', class: 'modify', action: editTask, title: 'Edit task' },
+        { name: 'trash-outline', class: 'delete', action: deleteTask, title: 'Delete task' }
     ];
 
     buttons.forEach(button => {
@@ -220,10 +220,9 @@ function validTask(li, taskId) {
         fetchCompletedTasks(); 
     })
     .catch(error => {
-        console.error("Erreur lors de la validation de la tâche:", error);
+        console.error("Error marking task as done:", error);
     });
 }
-
 
 function appendCompletedTaskToList(task) {
     const li = document.createElement('li');
@@ -256,14 +255,14 @@ function duplicateTask(li) {
         fetchTasks(); 
     })
     .catch(error => {
-        console.error("Erreur lors de la duplication de la tâche:", error);
+        console.error("Error duplicating task:", error);
     });
 }
 
 function editTask(li, taskId) {
     const taskTextElement = li.firstChild;
     const currentText = taskTextElement.textContent;
-    const newTaskText = prompt("Modifier la tâche : ", currentText);
+    const newTaskText = prompt("Edit task: ", currentText);
 
     if (newTaskText === null || newTaskText.trim() === "" || newTaskText.length > 200) return;
 
@@ -276,7 +275,7 @@ function editTask(li, taskId) {
         fetchTasks(); 
     })
     .catch(error => {
-        console.error("Erreur lors de la modification de la tâche:", error);
+        console.error("Error editing task:", error);
     });
 }
 
@@ -290,7 +289,7 @@ function deleteTask(li, taskId) {
         li.remove();
     })
     .catch(error => {
-        console.error("Erreur lors de la suppression de la tâche:", error);
+        console.error("Error deleting task:", error);
     });
 }
 
@@ -304,18 +303,18 @@ function deleteCompletedTask(li, completedTaskId) {
         li.remove();
     })
     .catch(error => {
-        console.error("Erreur lors de la suppression de la tâche complétée:", error);
+        console.error("Error deleting completed task:", error);
     });
 }
 
-function showTab(onglet, event) {
-    const onglets = document.getElementsByClassName("contenu-onglet");
-    Array.from(onglets).forEach(o => o.style.display = "none");
+function showTab(tab, event) {
+    const tabs = document.getElementsByClassName("tab-content");
+    Array.from(tabs).forEach(t => t.style.display = "none");
 
-    const listeId = onglet === 'enCours' ? 'taskList' : 'completedTaskList';
-    document.getElementById(listeId).style.display = "block";
+    const listId = tab === 'inProgress' ? 'taskList' : 'completedTaskList';
+    document.getElementById(listId).style.display = "block";
 
-    const boutons = document.getElementsByClassName("onglet-actif");
-    Array.from(boutons).forEach(b => b.classList.remove("onglet-actif"));
-    event.currentTarget.classList.add("onglet-actif");
+    const buttons = document.getElementsByClassName("active-tab");
+    Array.from(buttons).forEach(b => b.classList.remove("active-tab"));
+    event.currentTarget.classList.add("active-tab");
 }
