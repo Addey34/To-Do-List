@@ -2,14 +2,21 @@
   "version": 2,
   "builds": [
     {
-      "src": "./server.js",
-      "use": "@vercel/node"
+      "src": "src/server.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["public/**/*", "dist/**/*"]
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/public/$1"
     }
-  ]
+  ],
+  "env": {
+    "JWT_SECRET": "@jwt_secret",
+    "MONGO_CONNECT_URL": "@mongo_connect_url"
+  }
 }
