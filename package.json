@@ -2,7 +2,7 @@
     "scripts": {
         "build": "tsc",
         "start": "tsc && node dist/index.js",
-        "dev": "ts-node src/index.ts",
+        "dev": "ts-node api/index.ts",
         "prestart": "npm run build"
     },
     "dependencies": {
