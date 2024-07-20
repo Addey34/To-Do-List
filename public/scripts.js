@@ -1,4 +1,4 @@
-const baseUrl = 'http://to-do-list-dun-eta-75.vercel.app';
+const baseUrl = 'https://to-do-list-dun-eta-75.vercel.app';
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
