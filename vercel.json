@@ -11,5 +11,9 @@
             "src": "/(.*)",
             "dest": "/index.ts"
         }
-    ]
+    ],
+    "env": {
+        "MONGO_CONNECT_URL": "@mongo_connect_url",
+        "JWT_SECRET": "@jwt_secret"
+    }
 }
