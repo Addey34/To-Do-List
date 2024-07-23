@@ -5,17 +5,15 @@ import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import sanitizeHtml from 'sanitize-html';
+import { client } from './mongoClient';
 
 dotenv.config();
 
 const app = express();
-const MONGO_CONNECT_URL = process.env.MONGO_CONNECT_URL as string;
 const JWT_SECRET = process.env.JWT_SECRET as string;
-// const PORT = process.env.PORT || 3000;
-
-const client = new MongoClient(MONGO_CONNECT_URL);
+const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
 app.use(express.json({ limit: '1kb' }));
@@ -211,6 +209,29 @@ app.delete(
     }
 );
 
+app.delete(
+    '/completedTasks/:taskId',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        const { taskId } = req.params;
+        try {
+            const db = client.db('TaskList');
+            const result = await db.collection('CompletedTasks').deleteOne({
+                _id: new ObjectId(taskId),
+                userId: (req as any).user.userId,
+            });
+            if (result.deletedCount === 0)
+                return res
+                    .status(404)
+                    .json({ error: 'Completed task not found' });
+            res.json({ message: 'Completed task deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting completed task:', error);
+            res.status(500).json({ error: 'Failed to delete completed task' });
+        }
+    }
+);
+
 app.get(
     '/completedTasks',
     authenticateToken,
@@ -242,89 +263,27 @@ app.post(
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
             });
+
             if (!task) return res.status(404).json({ error: 'Task not found' });
 
-            const result = await db.collection('CompletedTasks').insertOne({
+            await db.collection('CompletedTasks').insertOne({
                 ...task,
                 completedAt: new Date().toISOString(),
             });
+
             await db.collection('Tasks').deleteOne({
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
             });
-            res.json({ message: 'Task marked as completed' });
+
+            res.json({ message: 'Task marked as complete' });
         } catch (error) {
-            console.error('Error marking task as completed:', error);
-            res.status(500).json({ error: 'Failed to mark task as completed' });
+            console.error('Error completing task:', error);
+            res.status(500).json({ error: 'Failed to complete task' });
         }
     }
 );
 
-app.delete(
-    '/completedTasks/:completedTaskId',
-    authenticateToken,
-    async (req: Request, res: Response) => {
-        const { completedTaskId } = req.params;
-        try {
-            const db = client.db('TaskList');
-            const result = await db.collection('CompletedTasks').deleteOne({
-                _id: new ObjectId(completedTaskId),
-                userId: (req as any).user.userId,
-            });
-            if (result.deletedCount === 0)
-                return res
-                    .status(404)
-                    .json({ error: 'Completed task not found' });
-            res.json({ message: 'Completed task deleted successfully' });
-        } catch (error) {
-            console.error('Error deleting completed task:', error);
-            res.status(500).json({ error: 'Failed to delete completed task' });
-        }
-    }
-);
-
-app.put(
-    '/tasks/:taskId/reorder',
-    authenticateToken,
-    async (req: Request, res: Response) => {
-        const { taskId } = req.params;
-        const { newIndex } = req.body;
-
-        if (typeof newIndex !== 'number')
-            return res.status(400).json({ error: 'Invalid newIndex' });
-
-        try {
-            const db = client.db('TaskList');
-            const result = await db.collection('Tasks').updateOne(
-                {
-                    _id: new ObjectId(taskId),
-                    userId: (req as any).user.userId,
-                },
-                { $set: { order: newIndex } }
-            );
-
-            if (result.modifiedCount === 0)
-                return res
-                    .status(404)
-                    .json({ error: 'Task not found or not modified' });
-
-            const tasks = await db
-                .collection('Tasks')
-                .find({ userId: (req as any).user.userId })
-                .sort({ order: 1 })
-                .toArray();
-            res.json(tasks);
-        } catch (error) {
-            console.error('Error updating task order:', error);
-            res.status(500).json({ error: 'Failed to update task order' });
-        }
-    }
-);
-
-// Export for Vercel
-export default async (req: Request, res: Response) => {
-    await client.connect();
-    return new Promise<void>((resolve) => {
-        app(req as any, res as any, () => resolve());
-    });
-};
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

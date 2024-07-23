@@ -1,4 +1,5 @@
-const baseUrl = 'https://to-do-list-ag.vercel.app';
+const baseUrl = 'http://localhost:5500';
+// 'https://to-do-list-ag.vercel.app/' ||
 const taskInput = document.getElementById('taskInput');
 const taskList = document.getElementById('taskList');
 const completedTaskList = document.getElementById('completedTaskList');
@@ -14,7 +15,6 @@ let token = getToken();
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
 
     axios
         .post(`${baseUrl}/login`, { username, password })
@@ -60,8 +60,8 @@ function logout() {
     token = null;
     document.getElementById('todoApp').style.display = 'none';
     document.getElementById('loginForm').style.display = 'flex';
-    document.getElementById('loginForm').style.flexDirection = 'column;';
-    document.getElementById('loginForm').style.alignItems = 'center;';
+    document.getElementById('loginForm').style.flexDirection = 'column';
+    document.getElementById('loginForm').style.alignItems = 'center';
     taskList.innerHTML = '';
     completedTaskList.innerHTML = '';
 }
@@ -91,9 +91,7 @@ function fetchTasks() {
     }
     axios
         .get(`${baseUrl}/tasks`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
             if (response && response.data) {
@@ -118,12 +116,10 @@ function fetchCompletedTasks() {
     const token = getToken();
     axios
         .get(`${baseUrl}/completedTasks`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-            console.log('Completed tasks fetched:', response.data); // Ajouter ce log
+            console.log('Completed tasks fetched:', response.data);
             completedTaskList.innerHTML = '';
             response.data.forEach((completedTask) =>
                 appendCompletedTaskToList(completedTask)
@@ -151,19 +147,14 @@ function initSortable() {
 }
 
 function updateTaskOrder(taskId, newIndex) {
-    console.log('Updating task order:', taskId, newIndex); // Debugging line
+    console.log('Updating task order:', taskId, newIndex);
     axios
         .put(
             `${baseUrl}/tasks/${taskId}/reorder`,
             { newIndex },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(() => {
-            console.log('Tasks fetched:', response.data);
             fetchTasks();
         })
         .catch((error) => {
@@ -185,13 +176,9 @@ function addTask() {
         .post(
             `${baseUrl}/tasks`,
             { taskText },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         )
-        .then((response) => {
+        .then(() => {
             fetchTasks();
             taskInput.value = '';
         })
@@ -249,9 +236,9 @@ function createButtonContainer(taskId) {
         icon.classList.add(button.class);
         icon.setAttribute('title', button.title);
         btn.appendChild(icon);
-        btn.addEventListener('click', function () {
-            button.action(this.closest('li'), taskId);
-        });
+        btn.addEventListener('click', () =>
+            button.action(btn.closest('li'), taskId)
+        );
         buttonContainer.appendChild(btn);
     });
 
@@ -270,14 +257,9 @@ function validTask(li, taskId) {
         .post(
             `${baseUrl}/tasks/${taskId}/complete`,
             {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         )
-        .then((response) => {
-            console.log('Task marked as completed:', response.data);
+        .then(() => {
             const taskText = li.textContent.trim();
             appendCompletedTaskToList({ text: taskText, _id: taskId });
             li.remove();
@@ -313,19 +295,15 @@ function appendCompletedTaskToList(task) {
     completedTaskList.appendChild(li);
 }
 
-function duplicateTask(li) {
+function duplicateTask(li, taskId) {
     const taskText = li.firstChild.textContent.trim();
     axios
         .post(
             `${baseUrl}/tasks`,
             { taskText },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         )
-        .then((response) => {
+        .then(() => {
             fetchTasks();
         })
         .catch((error) => {
@@ -349,11 +327,7 @@ function editTask(li, taskId) {
         .put(
             `${baseUrl}/tasks/${encodeURIComponent(taskId)}`,
             { text: newTaskText },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(() => {
             fetchTasks();
@@ -366,11 +340,9 @@ function editTask(li, taskId) {
 function deleteTask(li, taskId) {
     axios
         .delete(`${baseUrl}/tasks/${taskId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         })
-        .then((response) => {
+        .then(() => {
             li.remove();
         })
         .catch((error) => {
@@ -381,11 +353,9 @@ function deleteTask(li, taskId) {
 function deleteCompletedTask(li, completedTaskId) {
     axios
         .delete(`${baseUrl}/completedTasks/${completedTaskId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         })
-        .then((response) => {
+        .then(() => {
             li.remove();
         })
         .catch((error) => {

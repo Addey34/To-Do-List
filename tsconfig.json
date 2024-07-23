@@ -1,14 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./api",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["api/**/*.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "rootDir": "./api",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true
+    },
+    "include": ["api/**/*"],
+    "exclude": ["node_modules"]
 }

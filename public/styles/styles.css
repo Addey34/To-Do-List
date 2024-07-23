@@ -3,6 +3,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background: #f3efcb;
 }
@@ -16,7 +17,15 @@ body {
 }
 
 #loginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 2em;
+    width: 40%;
+    background: #fff;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #login,
@@ -31,10 +40,6 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-}
-
-#keepLoggedIn {
-    margin-top: 1em;
 }
 
 .container {
@@ -59,9 +64,8 @@ input[type='password'] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin: 0 0 10px 7%;
     height: 50px;
-    margin-left: 7%;
 }
 
 button {
@@ -142,7 +146,6 @@ ion-icon {
     #todoApp {
         width: 80%;
     }
-
     input[type='text'],
     input[type='password'] {
         margin-left: 3%;
@@ -154,37 +157,34 @@ ion-icon {
     #todoApp {
         width: 90%;
     }
-
     input[type='text'],
     input[type='password'] {
         margin-left: 0;
         width: 100%;
         box-sizing: border-box;
     }
-
     ion-icon {
-        font-size: 18px;
+        font-size: 15px;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding: 10px;
+        padding: 0em;
     }
-
     h1 {
         font-size: 1.5em;
     }
-
+    li {
+        font-size: 0.9em;
+    }
     button {
-        padding: 0.3em;
+        padding: 0em;
     }
-
     ion-icon {
-        font-size: 16px;
+        font-size: 1.3em;
         padding: 0.3em;
     }
-
     #login,
     #register {
         font-size: 0.9em;
