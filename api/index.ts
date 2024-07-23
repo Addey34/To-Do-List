@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET as string;
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
 app.use(express.json({ limit: '1kb' }));
@@ -284,6 +284,10 @@ app.post(
     }
 );
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
+
+app.listen(() => {
+    console.log('Server is running');
 });

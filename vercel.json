@@ -2,17 +2,18 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/index.ts",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": ["public/**/*", "dist/**/*"]
-            }
+            "src": "index.ts",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/api/index.ts"
+            "dest": "/index.ts"
         }
-    ]
+    ],
+    "env": {
+        "MONGO_CONNECT_URL": "@mongo_connect_url",
+        "JWT_SECRET": "@jwt_secret"
+    }
 }
