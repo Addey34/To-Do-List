@@ -37,7 +37,10 @@ function login() {
                     error.response ? error.response.data.error : error.message
                 }`
             );
-            document.getElementById('loginForm').style.display = 'block';
+            const loginForm = document.getElementById('loginForm');
+            loginForm.style.display = 'flex';
+            loginForm.style.flexDirection = 'column';
+            loginForm.style.alignItems = 'center';
         });
 }
 
