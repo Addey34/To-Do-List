@@ -25,7 +25,7 @@ const mongoClient_1 = require("./mongoClient");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const JWT_SECRET = process.env.JWT_SECRET;
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 app.use((0, helmet_1.default)());
 app.use(express_1.default.json({ limit: '1kb' }));
 app.use((0, cors_1.default)());
@@ -246,6 +246,9 @@ app.post('/tasks/:taskId/complete', authenticateToken, (req, res) => __awaiter(v
         res.status(500).json({ error: 'Failed to complete task' });
     }
 }));
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
+app.listen(() => {
+    console.log('Server is running');
 });
