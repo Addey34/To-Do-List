@@ -54,8 +54,15 @@ function register() {
             alert('Registration successful. Please log in.');
         })
         .catch((error) => {
-            console.error('Registration error:', error);
-            alert('Registration error. Please try again.');
+            if (
+                error.response &&
+                error.response.data.error === 'Username already exists'
+            ) {
+                alert('Username already exists');
+            } else {
+                console.error('Error registering user:', error);
+                alert('Failed to register user');
+            }
         });
 }
 
