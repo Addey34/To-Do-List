@@ -25,20 +25,24 @@ const mongoClient_1 = require("./mongoClient");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const JWT_SECRET = process.env.JWT_SECRET;
-// const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+// Middleware
 app.use((0, helmet_1.default)());
 app.use(express_1.default.json({ limit: '1kb' }));
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
+// Sanitize input
 function sanitizeInput(input) {
     return (0, sanitize_html_1.default)(input, {
         allowedTags: [],
         allowedAttributes: {},
     });
 }
+// Validate task text
 function validateTaskText(text) {
     return typeof text === 'string' && text.length > 0 && text.length <= 200;
 }
+// Authenticate token
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     if (!authHeader)
@@ -55,6 +59,7 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+// Routes
 app.get('/', (req, res) => {
     res.send('Express on Vercel');
 });
@@ -65,7 +70,7 @@ app.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             .status(400)
             .json({ error: 'Username and password are required' });
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const existingUser = yield db.collection('Users').findOne({ username });
         if (existingUser)
             return res.status(400).json({ error: 'Username already exists' });
@@ -83,7 +88,7 @@ app.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* 
 app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const user = yield db.collection('Users').findOne({ username });
         if (!user)
             return res
@@ -107,7 +112,7 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 }));
 app.get('/tasks', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const tasks = yield db
             .collection('Tasks')
             .find({ userId: req.user.userId })
@@ -127,7 +132,7 @@ app.post('/tasks', authenticateToken, (req, res) => __awaiter(void 0, void 0, vo
         return res.status(400).json({ error: 'Invalid task text' });
     const createdAt = new Date().toISOString();
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const highestOrderTask = yield db
             .collection('Tasks')
             .findOne({ userId: req.user.userId }, { sort: { order: -1 } });
@@ -155,7 +160,7 @@ app.put('/tasks/:taskId', authenticateToken, (req, res) => __awaiter(void 0, voi
     if (!validateTaskText(text))
         return res.status(400).json({ error: 'Invalid task text' });
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         yield db.collection('Tasks').updateOne({
             _id: new mongodb_1.ObjectId(taskId),
             userId: req.user.userId,
@@ -175,7 +180,7 @@ app.put('/tasks/:taskId', authenticateToken, (req, res) => __awaiter(void 0, voi
 app.delete('/tasks/:taskId', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { taskId } = req.params;
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const result = yield db.collection('Tasks').deleteOne({
             _id: new mongodb_1.ObjectId(taskId),
             userId: req.user.userId,
@@ -192,7 +197,7 @@ app.delete('/tasks/:taskId', authenticateToken, (req, res) => __awaiter(void 0, 
 app.delete('/completedTasks/:taskId', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { taskId } = req.params;
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const result = yield db.collection('CompletedTasks').deleteOne({
             _id: new mongodb_1.ObjectId(taskId),
             userId: req.user.userId,
@@ -210,7 +215,7 @@ app.delete('/completedTasks/:taskId', authenticateToken, (req, res) => __awaiter
 }));
 app.get('/completedTasks', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const completedTasks = yield db
             .collection('CompletedTasks')
             .find({ userId: req.user.userId })
@@ -227,14 +232,16 @@ app.get('/completedTasks', authenticateToken, (req, res) => __awaiter(void 0, vo
 app.post('/tasks/:taskId/complete', authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { taskId } = req.params;
     try {
-        const db = mongoClient_1.client.db('TaskList');
+        const db = yield (0, mongoClient_1.connectToDatabase)();
         const task = yield db.collection('Tasks').findOne({
             _id: new mongodb_1.ObjectId(taskId),
             userId: req.user.userId,
         });
         if (!task)
             return res.status(404).json({ error: 'Task not found' });
-        yield db.collection('CompletedTasks').insertOne(Object.assign(Object.assign({}, task), { completedAt: new Date().toISOString() }));
+        yield db
+            .collection('CompletedTasks')
+            .insertOne(Object.assign(Object.assign({}, task), { completedAt: new Date().toISOString() }));
         yield db.collection('Tasks').deleteOne({
             _id: new mongodb_1.ObjectId(taskId),
             userId: req.user.userId,
@@ -246,9 +253,30 @@ app.post('/tasks/:taskId/complete', authenticateToken, (req, res) => __awaiter(v
         res.status(500).json({ error: 'Failed to complete task' });
     }
 }));
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });
-app.listen(() => {
-    console.log('Server is running');
-});
+function startServer() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield (0, mongoClient_1.connectToDatabase)();
+            app.listen(PORT, () => {
+                console.log(`⚡️[server]: Server is running at Port : ${PORT}`);
+            });
+        }
+        catch (error) {
+            console.error('Failed to start server:', error);
+            process.exit(1);
+        }
+    });
+}
+startServer();
+// Graceful shutdown
+process.on('SIGINT', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('SIGINT signal received: closing HTTP server');
+    yield (0, mongoClient_1.closeDatabaseConnection)();
+    process.exit(0);
+}));
+process.on('SIGTERM', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('SIGTERM signal received: closing HTTP server');
+    yield (0, mongoClient_1.closeDatabaseConnection)();
+    process.exit(0);
+}));
+exports.default = app;

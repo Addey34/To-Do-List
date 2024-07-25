@@ -7,19 +7,21 @@ import helmet from 'helmet';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import sanitizeHtml from 'sanitize-html';
-import { client } from './mongoClient';
+import { closeDatabaseConnection, connectToDatabase } from './mongoClient';
 
 dotenv.config();
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET as string;
-// const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(helmet());
 app.use(express.json({ limit: '1kb' }));
 app.use(cors());
 app.use(bodyParser.json());
 
+// Sanitize input
 function sanitizeInput(input: string): string {
     return sanitizeHtml(input, {
         allowedTags: [],
@@ -27,14 +29,15 @@ function sanitizeInput(input: string): string {
     });
 }
 
+// Validate task text
 function validateTaskText(text: string): boolean {
     return typeof text === 'string' && text.length > 0 && text.length <= 200;
 }
 
+// Authenticate token
 function authenticateToken(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'];
     if (!authHeader) return res.sendStatus(401);
-
     const token = authHeader.split(' ')[1];
     if (!token) return res.sendStatus(401);
 
@@ -54,6 +57,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
     );
 }
 
+// Routes
 app.get('/', (req: Request, res: Response) => {
     res.send('Express on Vercel');
 });
@@ -66,7 +70,7 @@ app.post('/register', async (req: Request, res: Response) => {
             .json({ error: 'Username and password are required' });
 
     try {
-        const db = client.db('TaskList');
+        const db = await connectToDatabase();
         const existingUser = await db.collection('Users').findOne({ username });
         if (existingUser)
             return res.status(400).json({ error: 'Username already exists' });
@@ -84,8 +88,9 @@ app.post('/register', async (req: Request, res: Response) => {
 
 app.post('/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
+
     try {
-        const db = client.db('TaskList');
+        const db = await connectToDatabase();
         const user = await db.collection('Users').findOne({ username });
         if (!user)
             return res
@@ -111,7 +116,7 @@ app.post('/login', async (req: Request, res: Response) => {
 
 app.get('/tasks', authenticateToken, async (req: Request, res: Response) => {
     try {
-        const db = client.db('TaskList');
+        const db = await connectToDatabase();
         const tasks = await db
             .collection('Tasks')
             .find({ userId: (req as any).user.userId })
@@ -131,8 +136,9 @@ app.post('/tasks', authenticateToken, async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Invalid task text' });
 
     const createdAt = new Date().toISOString();
+
     try {
-        const db = client.db('TaskList');
+        const db = await connectToDatabase();
         const highestOrderTask = await db
             .collection('Tasks')
             .findOne(
@@ -140,12 +146,14 @@ app.post('/tasks', authenticateToken, async (req: Request, res: Response) => {
                 { sort: { order: -1 } }
             );
         const newOrder = highestOrderTask ? highestOrderTask.order + 1 : 0;
+
         const result = await db.collection('Tasks').insertOne({
             text: taskText,
             createdAt,
             order: newOrder,
             userId: (req as any).user.userId,
         });
+
         res.status(201).json({
             message: 'Task added successfully',
             taskId: result.insertedId,
@@ -167,7 +175,7 @@ app.put(
             return res.status(400).json({ error: 'Invalid task text' });
 
         try {
-            const db = client.db('TaskList');
+            const db = await connectToDatabase();
             await db.collection('Tasks').updateOne(
                 {
                     _id: new ObjectId(taskId),
@@ -175,6 +183,7 @@ app.put(
                 },
                 { $set: { text: text } }
             );
+
             const tasks = await db
                 .collection('Tasks')
                 .find({ userId: (req as any).user.userId })
@@ -193,14 +202,16 @@ app.delete(
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
+
         try {
-            const db = client.db('TaskList');
+            const db = await connectToDatabase();
             const result = await db.collection('Tasks').deleteOne({
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
             });
             if (result.deletedCount === 0)
                 return res.status(404).json({ error: 'Task not found' });
+
             res.json({ message: 'Task deleted successfully' });
         } catch (error) {
             console.error('Error deleting task:', error);
@@ -214,8 +225,9 @@ app.delete(
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
+
         try {
-            const db = client.db('TaskList');
+            const db = await connectToDatabase();
             const result = await db.collection('CompletedTasks').deleteOne({
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
@@ -224,6 +236,7 @@ app.delete(
                 return res
                     .status(404)
                     .json({ error: 'Completed task not found' });
+
             res.json({ message: 'Completed task deleted successfully' });
         } catch (error) {
             console.error('Error deleting completed task:', error);
@@ -237,7 +250,7 @@ app.get(
     authenticateToken,
     async (req: Request, res: Response) => {
         try {
-            const db = client.db('TaskList');
+            const db = await connectToDatabase();
             const completedTasks = await db
                 .collection('CompletedTasks')
                 .find({ userId: (req as any).user.userId })
@@ -257,20 +270,18 @@ app.post(
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
+
         try {
-            const db = client.db('TaskList');
+            const db = await connectToDatabase();
             const task = await db.collection('Tasks').findOne({
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
             });
-
             if (!task) return res.status(404).json({ error: 'Task not found' });
 
-            await db.collection('CompletedTasks').insertOne({
-                ...task,
-                completedAt: new Date().toISOString(),
-            });
-
+            await db
+                .collection('CompletedTasks')
+                .insertOne({ ...task, completedAt: new Date().toISOString() });
             await db.collection('Tasks').deleteOne({
                 _id: new ObjectId(taskId),
                 userId: (req as any).user.userId,
@@ -284,10 +295,31 @@ app.post(
     }
 );
 
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });
+async function startServer() {
+    try {
+        await connectToDatabase();
+        app.listen(PORT, () => {
+            console.log(`⚡️[server]: Server is running at Port : ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+}
 
-app.listen(() => {
-    console.log('Server is running');
+startServer();
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    await closeDatabaseConnection();
+    process.exit(0);
 });
+
+process.on('SIGTERM', async () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    await closeDatabaseConnection();
+    process.exit(0);
+});
+
+export default app;
