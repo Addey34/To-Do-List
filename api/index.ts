@@ -306,10 +306,8 @@ app.post(
 async function startServer() {
     try {
         await connectToDatabase();
-        app.listen(PORT, () => {
-            console.log(
-                `⚡️[server]: Server is running at http://localhost:${PORT}`
-            );
+        app.listen(() => {
+            console.log('⚡️[server]: Server is running');
         });
     } catch (error) {
         console.error('Failed to start server:', error);
@@ -330,6 +328,10 @@ process.on('SIGTERM', async () => {
     console.log('SIGTERM signal received: closing HTTP server');
     await closeDatabaseConnection();
     process.exit(0);
+});
+
+app.listen(() => {
+    console.log('Server is running');
 });
 
 export default app;
