@@ -18,7 +18,7 @@ function login() {
     const password = document.getElementById('password').value;
 
     axios
-        .post(`${baseUrl}/login`, { username, password })
+        .post(`${baseUrl}/api/login`, { username, password })
         .then((response) => {
             token = response.data.token;
             localStorage.setItem('token', token);
@@ -49,7 +49,7 @@ function register() {
     const password = document.getElementById('password').value;
 
     axios
-        .post(`${baseUrl}/register`, { username, password })
+        .post(`${baseUrl}/api/register`, { username, password })
         .then(() => {
             alert('Registration successful. Please log in.');
         })
@@ -94,7 +94,7 @@ function fetchTasks() {
         return;
     }
     axios
-        .get(`${baseUrl}/tasks`, {
+        .get(`${baseUrl}/api/tasks`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -119,7 +119,7 @@ function fetchTasks() {
 function fetchCompletedTasks() {
     const token = getToken();
     axios
-        .get(`${baseUrl}/completedTasks`, {
+        .get(`${baseUrl}/api/completedTasks`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -154,7 +154,7 @@ function updateTaskOrder(taskId, newIndex) {
     console.log('Updating task order:', taskId, newIndex);
     axios
         .put(
-            `${baseUrl}/tasks/${taskId}/reorder`,
+            `${baseUrl}/api/tasks/${taskId}/reorder`,
             { newIndex },
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -178,7 +178,7 @@ function addTask() {
 
     axios
         .post(
-            `${baseUrl}/tasks`,
+            `${baseUrl}/api/tasks`,
             { taskText },
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -259,7 +259,7 @@ function validTask(li, taskId) {
 
     axios
         .post(
-            `${baseUrl}/tasks/${taskId}/complete`,
+            `${baseUrl}/api/tasks/${taskId}/complete`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -303,7 +303,7 @@ function duplicateTask(li, taskId) {
     const taskText = li.firstChild.textContent.trim();
     axios
         .post(
-            `${baseUrl}/tasks`,
+            `${baseUrl}/api/tasks`,
             { taskText },
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -329,7 +329,7 @@ function editTask(li, taskId) {
 
     axios
         .put(
-            `${baseUrl}/tasks/${encodeURIComponent(taskId)}`,
+            `${baseUrl}/api/tasks/${encodeURIComponent(taskId)}`,
             { text: newTaskText },
             { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -343,7 +343,7 @@ function editTask(li, taskId) {
 
 function deleteTask(li, taskId) {
     axios
-        .delete(`${baseUrl}/tasks/${taskId}`, {
+        .delete(`${baseUrl}/api/tasks/${taskId}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => {
@@ -356,7 +356,7 @@ function deleteTask(li, taskId) {
 
 function deleteCompletedTask(li, completedTaskId) {
     axios
-        .delete(`${baseUrl}/completedTasks/${completedTaskId}`, {
+        .delete(`${baseUrl}/api/completedTasks/${completedTaskId}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => {

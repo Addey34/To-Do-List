@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET as string;
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(helmet());
@@ -62,7 +62,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Express on Vercel');
 });
 
-app.post('/register', async (req: Request, res: Response) => {
+app.post('/api/register', async (req: Request, res: Response) => {
     const { username, password } = req.body;
     if (!username || !password)
         return res
@@ -86,7 +86,7 @@ app.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-app.post('/login', async (req: Request, res: Response) => {
+app.post('/api/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     try {
@@ -114,58 +114,66 @@ app.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-app.get('/tasks', authenticateToken, async (req: Request, res: Response) => {
-    try {
-        const db = await connectToDatabase();
-        const tasks = await db
-            .collection('Tasks')
-            .find({ userId: (req as any).user.userId })
-            .sort({ order: 1 })
-            .toArray();
-        res.json(tasks);
-    } catch (error) {
-        console.error('Error retrieving tasks:', error);
-        res.status(500).json({ error: 'Failed to retrieve tasks' });
+app.get(
+    '/api/tasks',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        try {
+            const db = await connectToDatabase();
+            const tasks = await db
+                .collection('Tasks')
+                .find({ userId: (req as any).user.userId })
+                .sort({ order: 1 })
+                .toArray();
+            res.json(tasks);
+        } catch (error) {
+            console.error('Error retrieving tasks:', error);
+            res.status(500).json({ error: 'Failed to retrieve tasks' });
+        }
     }
-});
+);
 
-app.post('/tasks', authenticateToken, async (req: Request, res: Response) => {
-    let { taskText } = req.body;
-    taskText = sanitizeInput(taskText);
-    if (!validateTaskText(taskText))
-        return res.status(400).json({ error: 'Invalid task text' });
+app.post(
+    '/api/tasks',
+    authenticateToken,
+    async (req: Request, res: Response) => {
+        let { taskText } = req.body;
+        taskText = sanitizeInput(taskText);
+        if (!validateTaskText(taskText))
+            return res.status(400).json({ error: 'Invalid task text' });
 
-    const createdAt = new Date().toISOString();
+        const createdAt = new Date().toISOString();
 
-    try {
-        const db = await connectToDatabase();
-        const highestOrderTask = await db
-            .collection('Tasks')
-            .findOne(
-                { userId: (req as any).user.userId },
-                { sort: { order: -1 } }
-            );
-        const newOrder = highestOrderTask ? highestOrderTask.order + 1 : 0;
+        try {
+            const db = await connectToDatabase();
+            const highestOrderTask = await db
+                .collection('Tasks')
+                .findOne(
+                    { userId: (req as any).user.userId },
+                    { sort: { order: -1 } }
+                );
+            const newOrder = highestOrderTask ? highestOrderTask.order + 1 : 0;
 
-        const result = await db.collection('Tasks').insertOne({
-            text: taskText,
-            createdAt,
-            order: newOrder,
-            userId: (req as any).user.userId,
-        });
+            const result = await db.collection('Tasks').insertOne({
+                text: taskText,
+                createdAt,
+                order: newOrder,
+                userId: (req as any).user.userId,
+            });
 
-        res.status(201).json({
-            message: 'Task added successfully',
-            taskId: result.insertedId,
-        });
-    } catch (error) {
-        console.error('Error adding task:', error);
-        res.status(500).json({ error: 'Failed to add task' });
+            res.status(201).json({
+                message: 'Task added successfully',
+                taskId: result.insertedId,
+            });
+        } catch (error) {
+            console.error('Error adding task:', error);
+            res.status(500).json({ error: 'Failed to add task' });
+        }
     }
-});
+);
 
 app.put(
-    '/tasks/:taskId',
+    '/api/tasks/:taskId',
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
@@ -198,7 +206,7 @@ app.put(
 );
 
 app.delete(
-    '/tasks/:taskId',
+    '/api/tasks/:taskId',
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
@@ -221,7 +229,7 @@ app.delete(
 );
 
 app.delete(
-    '/completedTasks/:taskId',
+    '/api/completedTasks/:taskId',
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
@@ -246,7 +254,7 @@ app.delete(
 );
 
 app.get(
-    '/completedTasks',
+    '/api/completedTasks',
     authenticateToken,
     async (req: Request, res: Response) => {
         try {
@@ -266,7 +274,7 @@ app.get(
 );
 
 app.post(
-    '/tasks/:taskId/complete',
+    '/api/tasks/:taskId/complete',
     authenticateToken,
     async (req: Request, res: Response) => {
         const { taskId } = req.params;
@@ -299,7 +307,9 @@ async function startServer() {
     try {
         await connectToDatabase();
         app.listen(PORT, () => {
-            console.log(`⚡️[server]: Server is running at Port : ${PORT}`);
+            console.log(
+                `⚡️[server]: Server is running at http://localhost:${PORT}`
+            );
         });
     } catch (error) {
         console.error('Failed to start server:', error);
