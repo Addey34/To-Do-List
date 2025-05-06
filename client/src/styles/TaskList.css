@@ -1,0 +1,208 @@
+.tasks-container {
+    min-width: 700px;
+}
+
+.tabs-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-button {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0.75rem;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.tab-button.active {
+    background: var(--primary);
+    color: white;
+}
+
+.tab-icon {
+    justify-content: start;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.badge {
+    justify-content: end;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    font-size: 1.5rem;
+}
+
+.drag-icon {
+    width: 1rem;
+    height: 1rem;
+    transition: opacity 0.2s ease;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    position: relative;
+}
+
+.task-item:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.task-item.editing {
+    padding: 1.5rem 0 1.5rem 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.task-item.new-task {
+    animation: pulse 1.5s ease-in-out;
+}
+
+.new-task {
+    animation: pulse 1.5s ease-in-out;
+}
+
+.task-content {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.task-text {
+    flex-grow: 1;
+    margin: 0 1rem;
+    padding: 1rem 0;
+    word-break: break-word;
+    font-size: 1.5rem;
+}
+
+.task-actions {
+    display: flex;
+}
+
+.task-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.drag-handle {
+    display: flex;
+    flex-direction: column;
+    cursor: grab;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.drag-handle:hover .drag-icon {
+    opacity: 1;
+}
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.edit-mode {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.edit-input {
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Sortable */
+.sortable-ghost {
+    opacity: 0.5;
+    background: #e0e7ff;
+}
+
+.sortable-chosen {
+    opacity: 0.8;
+    background: #e0e7ff !important;
+}
+
+.sortable-drag {
+    opacity: 1;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+    .tasks-container {
+        min-width: 300px;
+    }
+
+    .tab-button {
+        font-size: 1rem;
+        padding: 0.75rem;
+        display: flex;
+    }
+
+    .tab-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .badge {
+        font-size: 1rem;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .task-content {
+        flex-direction: column;
+    }
+
+    .task-text {
+        padding: 0.5rem 0;
+    }
+
+    .edit-mode {
+        flex-direction: column;
+    }
+
+    .edit-actions {
+        align-items: center;
+    }
+}

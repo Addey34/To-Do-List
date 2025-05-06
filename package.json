@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "concurrently \"pnpm --filter server start\" \"pnpm --filter client dev\"",
+    "build": "pnpm --filter client build && pnpm --filter server build",
+    "dev": "pnpm start",
+    "server": "pnpm --filter server start",
+    "client": "pnpm --filter client dev",
+    "lint": "pnpm --filter server lint && pnpm --filter client lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
