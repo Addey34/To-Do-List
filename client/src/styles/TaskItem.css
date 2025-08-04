@@ -1,0 +1,85 @@
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    position: relative;
+}
+
+.task-item:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.task-item.editing {
+    padding: 1.5rem 0 1.5rem 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.task-item.new-task {
+    animation: pulse 1.5s ease-in-out;
+}
+
+.task-content {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.task-text {
+    flex-grow: 1;
+    margin: 0 1rem;
+    padding: 1rem 0;
+    word-break: break-word;
+    font-size: 1.5rem;
+}
+
+.task-actions {
+    display: flex;
+}
+
+.task-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.edit-mode {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.edit-input {
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: #e0e7ff;
+}
+
+.sortable-chosen {
+    opacity: 0.8;
+    background: #e0e7ff !important;
+}
+
+.sortable-drag {
+    opacity: 1;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}

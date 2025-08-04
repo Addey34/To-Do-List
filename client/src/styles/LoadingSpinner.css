@@ -1,0 +1,15 @@
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    border-radius: 50%;
+    height: 2rem;
+    width: 2rem;
+    border-top: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary);
+}

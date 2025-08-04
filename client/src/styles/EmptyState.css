@@ -1,0 +1,24 @@
+.empty-state {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.empty-state-icon {
+    margin: 0 auto;
+    height: 3rem;
+    width: 3rem;
+    color: var(--gray);
+}
+
+.empty-state-title {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.empty-state-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--gray);
+}

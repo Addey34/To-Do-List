@@ -1,0 +1,84 @@
+.tasks-container {
+    min-width: 700px;
+}
+
+.tabs-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-button {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0.75rem;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.tab-button.active {
+    background: var(--primary);
+    color: var(--light);
+}
+
+.tab-button.active:hover {
+    background: var(--primary-dark);
+    color: var(--light);
+}
+
+.tab-button:not(.active):hover {
+    background: var(--gray);
+}
+
+.tab-icon {
+    justify-content: start;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.badge {
+    justify-content: end;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    font-size: 1.5rem;
+}
+
+.drag-icon {
+    width: 1rem;
+    height: 1rem;
+    transition: opacity 0.2s ease;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    position: relative;
+}
+
+.task-item:hover {
+    box-shadow: var(--shadow-lg);
+}

@@ -1,0 +1,48 @@
+.task-icon-button {
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition), transform 0.1s ease-in-out;
+}
+
+.task-icon-button.primary {
+    color: var(--primary);
+}
+
+.task-icon-button.primary:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+.task-icon-button.danger {
+    color: var(--danger);
+}
+
+.task-icon-button.danger:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.task-icon-button.secondary {
+    color: var(--secondary);
+}
+
+.task-icon-button.secondary:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.task-icon-button.warning {
+    color: var(--warning);
+}
+
+.task-icon-button.warning:hover {
+    background-color: rgba(234, 179, 8, 0.1);
+}
+
+.task-icon-button:active {
+    transform: scale(0.8);
+}
