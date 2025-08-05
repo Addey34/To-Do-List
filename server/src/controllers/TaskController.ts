@@ -172,7 +172,7 @@ export default class TaskController {
             }
 
             const { updates } = req.body;
-            if (!Array.isArray(updates)) {
+            if (!Array.isArray(updates) || updates.length === 0) {
                 res.status(400).json({ error: 'Invalid updates format' });
                 return;
             }

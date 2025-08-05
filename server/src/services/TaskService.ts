@@ -53,18 +53,13 @@ export class TaskService {
     }
 
     async createTask(task: Omit<ITask, '_id'>): Promise<ObjectId> {
-        const INITIAL_ORDER = 65536;
-
         const lastTask = await this.db!.collection<ITask>('Tasks')
             .find({ userId: task.userId })
             .sort({ order: -1 })
             .limit(1)
             .toArray();
 
-        const newOrder =
-            lastTask.length > 0
-                ? lastTask[0].order + INITIAL_ORDER
-                : INITIAL_ORDER;
+        const newOrder = lastTask.length > 0 ? lastTask[0].order + 1 : 1;
 
         const result = await this.db!.collection('Tasks').insertOne({
             ...task,
@@ -132,7 +127,11 @@ export class TaskService {
     ): Promise<void> {
         const bulkOps = updates.map(({ taskId, newOrder }) => ({
             updateOne: {
-                filter: { _id: new ObjectId(taskId), userId },
+                filter: {
+                    _id: new ObjectId(taskId),
+                    userId,
+                    completedAt: { $exists: false },
+                },
                 update: { $set: { order: newOrder } },
             },
         }));
