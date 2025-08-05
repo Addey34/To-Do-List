@@ -1,53 +1,125 @@
 .app-container {
-    background: white;
-    padding: 1.5rem;
+    background-color: var(--light);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
+    max-width: 100%;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color var(--transition);
 }
 
 .app-header {
     display: flex;
-    margin: 0rem 1.5rem 0 1.5rem;
     justify-content: space-between;
     align-items: center;
-}
-
-.spacer {
-    width: 113px;
+    width: 100%;
+    margin-bottom: 2rem;
+    position: relative;
 }
 
 .app-title {
     font-size: 3rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
+    text-align: center;
+    transition: color var(--transition);
+    flex-grow: 1;
 }
 
 .input-fields {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.input-fields .form-input {
+    flex-grow: 1;
+    padding: 0.8rem;
+    font-size: 1.2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray);
 }
 
 .btn-add {
     width: 4rem;
     height: 4rem;
-    padding: 0;
-    display: inline-flex;
+    background: var(--secondary);
+    border-radius: var(--border-radius);
+    display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease-in-out;
+    color: var(--light);
+    font-size: 2rem;
+    transition: background 0.3s ease;
 }
 
-@media (max-width: 640px) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 1.5rem;
+    }
+
     .app-title {
         font-size: 2.5rem;
     }
 
-    .spacer {
-        width: 0px;
+    .input-fields {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .input-fields .form-input {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .btn-add {
+        width: 100%;
+        height: 3rem;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-title {
+        font-size: 2rem;
     }
 
     .input-fields {
-        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .btn-add {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .btn-logout {
+        position: static;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 1.75rem;
+    }
+
+    .input-fields .form-input {
+        font-size: 1rem;
+    }
+
+    .btn-add {
+        font-size: 1.75rem;
     }
 }
