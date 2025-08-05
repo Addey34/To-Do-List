@@ -1,7 +1,8 @@
 import { CheckIcon } from '@heroicons/react/24/solid';
-import React from 'react';
+import React, { useEffect } from 'react';
+import Sortable from 'sortablejs';
 import '../../styles/TaskList.css';
-import { CompletedTask, Task } from '../../types/taskTypes';
+import { CompletedTask, Task, TaskOrderUpdate } from '../../types/taskTypes';
 import EmptyState from '../ui/EmptyState';
 import TaskItem from './TaskItem';
 
@@ -18,6 +19,7 @@ interface TaskListProps {
     onEdit: () => void;
     onCancelEditing: () => void;
     editingTaskId: string | null;
+    onReorderTasks: (updates: TaskOrderUpdate[]) => Promise<void>;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
@@ -33,17 +35,48 @@ const TaskList: React.FC<TaskListProps> = ({
     onEdit,
     onCancelEditing,
     editingTaskId,
+    onReorderTasks,
 }) => {
     const [activeTab, setActiveTab] = React.useState<'active' | 'completed'>(
         'active'
     );
+    const tasksListRef = React.useRef<HTMLUListElement>(null);
+    const activeTaskCount = tasks.length;
+    const completedTaskCount = completedTasks.length;
 
     const handleTabChange = (tab: 'active' | 'completed') => {
         setActiveTab(tab);
     };
 
-    const activeTaskCount = tasks.length;
-    const completedTaskCount = completedTasks.length;
+    useEffect(() => {
+        if (tasksListRef.current) {
+            const sortable = new Sortable(tasksListRef.current, {
+                onStart: (event: any) => {
+                    console.log('Drag started', event);
+                },
+                onEnd: (event: any) => {
+                    console.log('Drag ended', event);
+                    const reorderedTasks = Array.from(event.from.children)
+                        .filter(
+                            (item: any) => !item.classList.contains('completed')
+                        )
+                        .map((item: any, index: number) => ({
+                            taskId: item.dataset.id,
+                            newOrder: index + 1,
+                        }));
+
+                    console.log('Reordered tasks:', reorderedTasks);
+                    onReorderTasks(reorderedTasks);
+                },
+                animation: 150,
+                draggable: '.task-item.active',
+                handle: '.task-item',
+                ghostClass: 'sortable-ghost',
+            });
+
+            return () => sortable.destroy();
+        }
+    }, [tasks]);
 
     return (
         <div className="tasks-container">
@@ -84,7 +117,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 />
             )}
 
-            <ul className="task-list">
+            <ul ref={tasksListRef} className="task-list">
                 {activeTab === 'active' &&
                     tasks.map((task) => (
                         <TaskItem

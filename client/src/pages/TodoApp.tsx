@@ -9,9 +9,11 @@ import {
     deleteCompletedTask,
     deleteTask,
     duplicateTask,
+    reorderTasks,
     updateTask,
 } from '../services/taskService';
 import '../styles/TodoApp.css';
+import { TaskOrderUpdate } from '../types/taskTypes';
 
 const TodoApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     const { tasks, completedTasks, loadTasks, loadCompletedTasks } = useTasks();
@@ -71,10 +73,15 @@ const TodoApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         loadCompletedTasks();
     };
 
+    const handleReorderTasks = async (updates: TaskOrderUpdate[]) => {
+        console.log('Reorder tasks updates:', updates);
+        await reorderTasks(updates);
+        loadTasks();
+    };
+
     return (
         <div className="app-container">
             <header className="app-header">
-                <div className="spacer"></div>
                 <h1 className="app-title">To Do List</h1>
                 <button className="btn btn-logout" onClick={onLogout}>
                     Logout
@@ -111,6 +118,7 @@ const TodoApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                 onEdit={handleEditTask}
                 onCancelEditing={handleCancelEditing}
                 editingTaskId={editingTaskId}
+                onReorderTasks={handleReorderTasks}
             />
         </div>
     );

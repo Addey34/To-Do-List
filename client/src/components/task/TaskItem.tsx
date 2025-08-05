@@ -41,8 +41,11 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
     return (
         <li
-            className={`task-item ${isEditing ? 'editing' : ''}`}
+            className={`task-item ${isEditing ? 'editing' : ''}${
+                !isCompleted ? 'active' : ''
+            }`}
             data-id={task._id}
+            draggable={!isCompleted}
         >
             {isEditing ? (
                 <div className="edit-mode">
