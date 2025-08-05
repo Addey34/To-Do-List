@@ -42,6 +42,9 @@ const TaskList: React.FC<TaskListProps> = ({
         setActiveTab(tab);
     };
 
+    const activeTaskCount = tasks.length;
+    const completedTaskCount = completedTasks.length;
+
     return (
         <div className="tasks-container">
             <div className="tabs-container">
@@ -52,6 +55,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     onClick={() => handleTabChange('active')}
                 >
                     Active Tasks
+                    <span className="badge">{activeTaskCount}</span>
                 </button>
                 <button
                     className={`tab-button ${
@@ -60,6 +64,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     onClick={() => handleTabChange('completed')}
                 >
                     Completed Tasks
+                    <span className="badge">{completedTaskCount}</span>
                 </button>
             </div>
 

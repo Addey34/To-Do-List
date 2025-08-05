@@ -22,6 +22,7 @@
     cursor: pointer;
     border-radius: var(--border-radius);
     transition: var(--transition);
+    position: relative;
 }
 
 .tab-button.active {
@@ -45,11 +46,14 @@
 }
 
 .badge {
-    justify-content: end;
     padding: 0.25rem 0.5rem;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 9999px;
     font-size: 1.5rem;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    margin-right: 0.5rem;
 }
 
 .drag-icon {
