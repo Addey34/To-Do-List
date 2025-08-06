@@ -53,9 +53,8 @@
 }
 
 .task-item {
-    width: 100%;
     display: flex;
-    padding: 0.5rem;
+    padding: 0 0.5rem;
     background: var(--light);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-md);

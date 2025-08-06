@@ -3,7 +3,6 @@
     display: flex;
     align-items: center;
     flex: 1;
-    min-width: 0;
 }
 
 .task-text {
@@ -31,4 +30,34 @@
 .sortable-chosen {
     opacity: 0.8;
     background: #e0e7ff !important;
+}
+
+@media (max-width: 600px) {
+    .task-content {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .task-text {
+        padding: 0;
+        font-size: 1.25rem;
+    }
+
+    .task-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .edit-mode {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .edit-input {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--border-radius);
+        font-size: 1.25rem;
+    }
 }
