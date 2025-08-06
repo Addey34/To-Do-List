@@ -21,6 +21,14 @@ const TodoApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const [editedText, setEditedText] = useState('');
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            // Si la touche appuyée est "Entrée"
+            e.preventDefault(); // Empêche le comportement par défaut de la touche Entrée (souvent un saut de ligne dans des zones de texte)
+            handleAddTask(); // Appelle la fonction pour ajouter la tâche
+        }
+    };
+
     const handleAddTask = async () => {
         const newTask = await addTask(taskText);
         if (newTask) {
@@ -95,6 +103,7 @@ const TodoApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                     value={taskText}
                     onChange={(e) => setTaskText(e.target.value)}
                     placeholder="Add a task"
+                    onKeyDown={handleKeyDown}
                 />
                 <TaskIconButton
                     icon={<PlusCircleIcon />}

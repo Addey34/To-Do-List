@@ -39,6 +39,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
     const isCompleted = 'completedAt' in task;
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onEdit();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            onCancelEditing();
+        }
+    };
+
     return (
         <li
             className={`task-item ${isEditing ? 'editing' : ''}${
@@ -54,6 +64,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                         className="edit-input"
                         value={editedText}
                         onChange={(e) => setEditedText(e.target.value)}
+                        onKeyDown={handleKeyDown}
                         autoFocus
                     />
                     <div className="edit-actions">
