@@ -121,21 +121,21 @@ L'application sera accessible sur [Frontend](http://localhost:3000) et [Backend]
 
 #### Authentification
 
--- POST /api/auth/register : Inscription d'un utilisateur.
--- POST /api/auth/login : Connexion d'un utilisateur.
+- POST /api/auth/register : Inscription d'un utilisateur.
+- POST /api/auth/login : Connexion d'un utilisateur.
 
 #### Tâches
 
--- GET /api/tasks : Récupérer toutes les tâches de l'utilisateur connecté.
--- POST /api/tasks : Créer une nouvelle tâche.
--- PUT /api/tasks/:taskId : Mettre à jour une tâche.
--- DELETE /api/tasks/:taskId : Supprimer une tâche.
--- POST /api/tasks/:taskId/complete : Marquer une tâche comme terminée.
+- GET /api/tasks : Récupérer toutes les tâches de l'utilisateur connecté.
+- POST /api/tasks : Créer une nouvelle tâche.
+- PUT /api/tasks/:taskId : Mettre à jour une tâche.
+- DELETE /api/tasks/:taskId : Supprimer une tâche.
+- POST /api/tasks/:taskId/complete : Marquer une tâche comme terminée.
 
 #### Tâches terminées
 
--- GET /api/completedTasks : Récupérer toutes les tâches terminées.
--- DELETE /api/completedTasks/:taskId : Supprimer une tâche terminée.
+- GET /api/completedTasks : Récupérer toutes les tâches terminées.
+- DELETE /api/completedTasks/:taskId : Supprimer une tâche terminée.
 
 #### Sécurisation
 
