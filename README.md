@@ -37,15 +37,18 @@ L'architecture suit une approche **full stack** avec **React** pour le frontend 
       /services # Services pour API
       /styles # Styles CSS
       /types # Types TypeScript
+      /utils # Utilitaires
 
   /server # Backend (Express + MongoDB)
     /src
+      /config # Configurations
       /controllers # Contrôleurs pour la gestion des requêtes
       /middleware # Middleware pour l'authentification et les erreurs
       /models # Modèles pour la gestion des données
       /routes # Routes de l'API
       /services # Logique métier pour les utilisateurs et les tâches
       /types # Types TypeScript pour le backend
+      /utils # Utilitaires
   ```
 
 ## Technologies utilisées
@@ -65,6 +68,7 @@ L'architecture suit une approche **full stack** avec **React** pour le frontend 
 - **JWT (JSON Web Token)** pour l'authentification sécurisée des utilisateurs.
 - **bcryptjs** pour sécuriser les mots de passe.
 - **Helmet** et **CORS** pour la sécurité de l'application.
+- **dotenv** pour la gestion des variables d'environnement.
 
 ## Installation
 
@@ -76,7 +80,7 @@ L'architecture suit une approche **full stack** avec **React** pour le frontend 
 
 ### Étapes d'installation
 
-1.**Clonez le dépôt** :
+1.**Clonez le dépôt :**
 
   ```bash
   git clone https://github.com/Addey34/To-Do-List.git
@@ -91,34 +95,23 @@ L'architecture suit une approche **full stack** avec **React** pour le frontend 
 3.**Installer les dépendances pour le frontend et le backend :**
 
   ```bash
-  cd client
-  pnpm install
-  cd .. && cd server
   pnpm install
   ```
 
-4.**Configurez votre environnement** :  
-  Créez un fichier `.env` à la racine du projet et ajoutez les variables suivantes :
-
-  **Dans `.env` du backend :**
+4.**Configurez votre environnement :**
+  Créez les fichiers `.env` à la racine du projet et ajoutez les variables suivantes :
 
   ```bash
+  VITE_API_URL=http://localhost:5500
   JWT_SECRET=your-secret-key
   PORT=5500
   MONGO_CONNECT_URL=mongodb://localhost:27017/tasklist
   ALLOWED_ORIGINS=http://localhost:3000
   ```
 
-5.**Lancer le backend :**
+5.**Lancer le frontend et le backend :**
 
   ```bash
-  pnpm run start
-  ```
-
-6.**Lancer le frontend (dans un autre terminal) :**
-
-  ```bash
-  cd client
   pnpm run dev
   ```
 
@@ -128,72 +121,37 @@ L'application sera accessible sur [Frontend](http://localhost:3000) et [Backend]
 
 #### Authentification
 
-POST /api/auth/register : Inscription d'un utilisateur.
-
-Requiert : username, password
-
-Réponse : { userId, message }
-
-POST /api/auth/login : Connexion d'un utilisateur.
-
-Requiert : username, password
-
-Réponse : { token }
+-- POST /api/auth/register : Inscription d'un utilisateur.
+-- POST /api/auth/login : Connexion d'un utilisateur.
 
 #### Tâches
 
-GET /api/tasks : Récupérer toutes les tâches de l'utilisateur connecté.
-
-POST /api/tasks : Créer une nouvelle tâche.
-Requiert : taskText
-Réponse : { message: 'Task created', taskId }
-
-PUT /api/tasks/:taskId : Mettre à jour une tâche.
-Requiert : taskId, text
-Réponse : { message: 'Task updated successfully' }
-
-DELETE /api/tasks/:taskId : Supprimer une tâche.
-Requiert : taskId
-Réponse : { message: 'Task deleted successfully' }
-
-POST /api/tasks/:taskId/complete : Marquer une tâche comme terminée.
-Réponse : { message: 'Task marked as complete' }
+-- GET /api/tasks : Récupérer toutes les tâches de l'utilisateur connecté.
+-- POST /api/tasks : Créer une nouvelle tâche.
+-- PUT /api/tasks/:taskId : Mettre à jour une tâche.
+-- DELETE /api/tasks/:taskId : Supprimer une tâche.
+-- POST /api/tasks/:taskId/complete : Marquer une tâche comme terminée.
 
 #### Tâches terminées
 
-GET /api/completedTasks : Récupérer toutes les tâches terminées.
-
-DELETE /api/completedTasks/:taskId : Supprimer une tâche terminée.
-Réponse : { message: 'Completed task deleted successfully' }
+-- GET /api/completedTasks : Récupérer toutes les tâches terminées.
+-- DELETE /api/completedTasks/:taskId : Supprimer une tâche terminée.
 
 #### Sécurisation
 
-JWT (JSON Web Token) : L'authentification est gérée via des tokens JWT, garantissant que seules les requêtes authentifiées peuvent accéder aux routes protégées.
+- JWT (JSON Web Token) : L'authentification est gérée via des tokens JWT, garantissant que seules les requêtes authentifiées peuvent accéder aux routes protégées.
 
-CORS : Le CORS est configuré pour permettre uniquement les connexions provenant des origines autorisées définies dans .env.
+- CORS : Le CORS est configuré pour permettre uniquement les connexions provenant des origines autorisées définies dans .env.
 
 #### Développement
 
 Scripts
 
-Frontend :
+Frontend && Backend :
 
   ```bash
-  pnpm run dev : # Lancer le serveur de développement.
-  ```
-
-  ```bash
+  pnpm run dev : # Lancer le serveur de développement et le serveur.
   pnpm run build : # Construire le projet pour la production.
-  ```
-
-Backend :
-
-  ```bash
-  pnpm run start : # Lancer le serveur.
-  ```
-
-  ```bash
-  pnpm run build : #Compiler le code TypeScript.
   ```
 
 ### Contributions
