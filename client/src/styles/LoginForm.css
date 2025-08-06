@@ -6,9 +6,8 @@
 }
 
 #auth-container {
-    width: 100%;
-    min-width: 600px;
-    background: white;
+    min-width: 500px;
+    background: var(--light);
     padding: 0 2rem 2rem 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-md);
@@ -33,7 +32,7 @@
 
 .form-input {
     flex: 1;
-    padding: 1rem;
+    padding: 0.5rem;
     font-size: 1.5rem;
     border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
@@ -53,26 +52,34 @@
 }
 
 .logger-container button {
+    font-size: 1rem;
     flex: 1;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     #auth-container {
-        padding: 1.5rem;
-        min-width: 300px;
+        min-width: 90%;
     }
 
     .auth-title {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
     }
 
-    .logger-container {
-        flex-direction: column;
+    .form-group {
         gap: 0.75rem;
     }
 
     .form-input {
+        font-size: 1.2rem;
         padding: 0.75rem;
-        font-size: 1.25rem;
+    }
+
+    .logger-container {
+        gap: 1rem;
+    }
+
+    .logger-container button {
+        flex: none;
+        width: 100%;
     }
 }
